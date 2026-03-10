@@ -1,0 +1,7 @@
+Familia: FAM:GAS
+Tipo de equipo: Sistemas de gases y accesorios asociados
+Actividades: inspección visual, verificación de conexiones, revisión de fugas, limpieza externa
+Frecuencia: mensual
+Responsable: [VALIDAR]
+Registros: [VALIDAR]
+Criterios de aceptación: [VALIDAR]

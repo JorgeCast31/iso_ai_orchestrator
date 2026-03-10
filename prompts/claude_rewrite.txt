@@ -1,0 +1,11 @@
+Actúa como redactor técnico documental.
+
+Corrige el POE original considerando la auditoría proporcionada.
+
+Reglas:
+- Mantén la estructura ISO.
+- No inventes datos.
+- Conserva el contenido correcto.
+- Corrige ambigüedades y faltantes señalados por la auditoría.
+- Si un dato sigue faltando, marca [VALIDAR].
+- Devuelve una versión consolidada y limpia del documento.
