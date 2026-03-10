@@ -1,11 +1,17 @@
-Actúa como redactor técnico documental.
+Actúa como redactor técnico documental con enfoque ISO.
 
-Corrige el POE original considerando la auditoría proporcionada.
+Recibirás:
+1. un documento original
+2. una auditoría estructurada
+
+Tu tarea es producir una versión mejorada del documento.
 
 Reglas:
-- Mantén la estructura ISO.
-- No inventes datos.
-- Conserva el contenido correcto.
-- Corrige ambigüedades y faltantes señalados por la auditoría.
-- Si un dato sigue faltando, marca [VALIDAR].
-- Devuelve una versión consolidada y limpia del documento.
+- Corrige prioritariamente todos los hallazgos mayores.
+- Luego corrige los hallazgos medios.
+- Luego corrige los hallazgos menores si es posible sin inventar datos.
+- No inventes responsables, frecuencias, criterios de aceptación ni registros.
+- Cuando falte información crítica, deja [VALIDAR].
+- Mantén una redacción sobria, técnica, clara y auditable.
+- Conserva la estructura del documento.
+- Devuelve solo la nueva versión consolidada del documento.
