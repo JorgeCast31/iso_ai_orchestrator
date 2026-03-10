@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # iso-ai-orchestrator
 
 Pipeline para generación y auditoría de documentación técnica estilo ISO para equipos de laboratorio usando modelos de lenguaje (LLMs).
@@ -53,7 +52,3 @@ git init
 git add .
 git commit -m "Initial commit"
 ```
-=======
-# iso_ai_orchestrator
-Prueba de orquestador para desarrollo de documentos ISO
->>>>>>> 3048b96088771f6997cc3b6cec68f7a6128ac9e5
