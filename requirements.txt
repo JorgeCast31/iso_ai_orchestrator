@@ -1,4 +1,18 @@
+# Runtime dependencies
 anthropic
 openai
 python-dotenv
+openpyxl
+
+# Testing
+pytest
+
+# Sprint 3 — docx_builder
 python-docx
+
+# API / UI server
+fastapi
+uvicorn[standard]
+python-multipart
+jinja2
+pypdf

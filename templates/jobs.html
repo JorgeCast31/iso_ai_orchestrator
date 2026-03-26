@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block title %}Jobs — ISO Orchestrator{% endblock %}
+
+{% block content %}
+<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+  <h1>Jobs</h1>
+  <a href="/" class="btn btn-primary">+ Nuevo Job</a>
+</div>
+<p class="subtitle">Historial de ejecuciones del pipeline.</p>
+
+{% if jobs %}
+<div class="card" style="padding:0; overflow:hidden;">
+  <table>
+    <thead>
+      <tr>
+        <th>Job ID</th>
+        <th>Estado</th>
+        <th>Plantilla</th>
+        <th>Plan</th>
+        <th>Creado</th>
+        <th>Completado</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for job in jobs %}
+      <tr>
+        <td>
+          <a href="/jobs/{{ job.job_id }}" style="font-family:monospace;font-size:12px;">
+            {{ job.job_id[:12] }}…
+          </a>
+        </td>
+        <td>
+          <span class="badge badge-{{ job.status }}">
+            {% if job.status == 'running' %}<span class="spinner"></span>{% endif %}
+            {{ job.status }}
+          </span>
+        </td>
+        <td style="color:var(--muted); max-width:160px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
+          {{ job.template_filename or '—' }}
+        </td>
+        <td style="color:var(--muted); max-width:160px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
+          {{ job.plan_filename or '—' }}
+        </td>
+        <td style="color:var(--muted); white-space:nowrap;">
+          {{ (job.created_at or '')[:19].replace('T', ' ') }}
+        </td>
+        <td style="color:var(--muted); white-space:nowrap;">
+          {{ (job.completed_at or '')[:19].replace('T', ' ') or '—' }}
+        </td>
+        <td>
+          <a href="/jobs/{{ job.job_id }}" class="btn btn-secondary" style="padding:4px 12px;">
+            Ver
+          </a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% else %}
+<div class="card">
+  <p class="empty">No hay jobs todavía. <a href="/">Crea el primero.</a></p>
+</div>
+{% endif %}
+
+<script>
+  // Auto-refresh when any job is still in progress
+  const hasActive = {{ 'true' if jobs | selectattr('status', 'in', ['queued', 'running']) | list else 'false' }};
+  if (hasActive) {
+    setTimeout(() => window.location.reload(), 5000);
+  }
+</script>
+{% endblock %}

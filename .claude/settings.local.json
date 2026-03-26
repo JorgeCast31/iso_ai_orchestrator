@@ -1,0 +1,37 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(.venv/Scripts/python.exe -m pytest tests/test_review_parser.py tests/test_decision.py -v)",
+      "Bash(.venv/Scripts/pip install:*)",
+      "Bash(python -c \"from src.config import validate_env; validate_env\\(\\); print\\(''ENV OK''\\)\")",
+      "Bash(.venv/Scripts/python.exe -m src.orchestrator)",
+      "Bash(dir \"c:/iso_ai_orchestator/outputs\" /b)",
+      "Bash(dir \"c:/iso_ai_orchestator/outputs/run_2026-03-11_155728\")",
+      "Bash(.venvScriptspython.exe -m pytest tests/test_document_extractor.py tests/test_document_validator.py -v)",
+      "Bash(python -m pytest tests/test_document_extractor.py tests/test_document_validator.py -v)",
+      "Bash(python -m pytest tests/ -v)",
+      "Bash(python -m pytest tests/test_document_extractor.py tests/test_document_validator.py tests/test_pipeline_unit.py tests/test_decision.py tests/test_review_parser.py -v)",
+      "Bash(python -c \"import openpyxl; print\\(''openpyxl'', openpyxl.__version__\\)\")",
+      "Bash(.venvScriptspip.exe install:*)",
+      "Bash(python -m pip install openpyxl)",
+      "Bash(python -m pytest tests/test_plan_loader.py tests/test_validator_plan.py tests/test_document_validator.py tests/test_document_extractor.py tests/test_review_parser.py tests/test_decision.py tests/test_pipeline_unit.py -v)",
+      "Bash(python -m pytest tests/test_plan_loader.py tests/test_validator_plan.py tests/test_document_validator.py tests/test_document_extractor.py tests/test_review_parser.py tests/test_decision.py tests/test_pipeline_unit.py -v --tb=short)",
+      "Bash(python -c \"from docx import Document; print\\(''python-docx OK''\\)\")",
+      "Bash(python -:*)",
+      "Bash(python -m pytest tests/test_docx_builder.py -v --tb=short)",
+      "Bash(python -m pytest tests/test_docx_builder.py tests/test_plan_loader.py tests/test_validator_plan.py tests/test_document_validator.py tests/test_document_extractor.py tests/test_review_parser.py tests/test_decision.py tests/test_pipeline_unit.py -v --tb=short)",
+      "Bash(python -m pytest -x -q)",
+      "Bash(python -c \":*)",
+      "Bash(python -m pytest -q --tb=short)",
+      "Bash(python -m pytest tests/ -v --tb=short)",
+      "Bash(pip install:*)",
+      "Bash(python -c \"import fastapi, uvicorn, multipart, jinja2; print\\(''all ok''\\)\")",
+      "Bash(python -c \"from src.api import app; print\\(''api import ok''\\)\")",
+      "Bash(python -m pytest tests/test_pipeline_unit.py -q --tb=short)",
+      "Bash(python -c \"import pypdf; print\\(''pypdf'', pypdf.__version__\\)\")",
+      "Bash(python -c \"from src.api import app; print\\(''import ok''\\)\")",
+      "Bash(python -m pytest tests/test_pipeline_unit.py tests/test_plan_loader.py tests/test_document_validator.py tests/test_document_extractor.py tests/test_docx_builder.py tests/test_review_parser.py tests/test_decision.py -q --tb=short)",
+      "Bash(python -c \"from src.api import _ACCEPTED_TEMPLATE_SUFFIXES, _ACCEPTED_PLAN_SUFFIXES; print\\(''template:'', _ACCEPTED_TEMPLATE_SUFFIXES\\); print\\(''plan:'', _ACCEPTED_PLAN_SUFFIXES\\)\")"
+    ]
+  }
+}

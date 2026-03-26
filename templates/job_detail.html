@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+{% block title %}Job {{ job.job_id[:12] }} — ISO Orchestrator{% endblock %}
+
+{% block content %}
+<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+  <h1>Job <span style="font-family:monospace; font-size:16px;">{{ job.job_id[:16] }}…</span></h1>
+  <a href="/jobs" class="btn btn-secondary">← Todos los jobs</a>
+</div>
+<p class="subtitle">
+  Plantilla: <strong>{{ job.template_filename or '—' }}</strong> &nbsp;|&nbsp;
+  Plan: <strong>{{ job.plan_filename or '—' }}</strong>
+  {% if job.context %}&nbsp;|&nbsp;Contexto: <em>{{ job.context[:80] }}{% if job.context|length > 80 %}…{% endif %}</em>{% endif %}
+</p>
+
+<!-- Status + timestamps -->
+<div class="card">
+  <div class="meta-row">
+    <div class="meta-item">
+      <div class="meta-label">Estado</div>
+      <div class="meta-value">
+        <span class="badge badge-{{ job.status }}" id="statusBadge">
+          {% if job.status in ('queued', 'running') %}<span class="spinner"></span>{% endif %}
+          <span id="statusText">{{ job.status }}</span>
+        </span>
+      </div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-label">Creado</div>
+      <div class="meta-value">{{ (job.created_at or '')[:19].replace('T', ' ') or '—' }}</div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-label">Inicio pipeline</div>
+      <div class="meta-value" id="startedAt">{{ (job.started_at or '')[:19].replace('T', ' ') or '—' }}</div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-label">Completado</div>
+      <div class="meta-value" id="completedAt">{{ (job.completed_at or '')[:19].replace('T', ' ') or '—' }}</div>
+    </div>
+  </div>
+
+  {% if job.error_message %}
+  <div class="error-box" id="errorBox">
+    <strong>Error:</strong> {{ job.error_message }}
+  </div>
+  {% endif %}
+</div>
+
+<!-- Output files -->
+<div class="card" id="filesCard">
+  <div class="card-title">Archivos generados</div>
+
+  {% if files %}
+  <div id="fileList">
+    {% for f in files %}
+    <details style="margin-bottom:14px; border:1px solid var(--border); border-radius:var(--radius);">
+      <summary style="padding:10px 14px; cursor:pointer; display:flex; align-items:center; justify-content:space-between; list-style:none;">
+        <span>
+          <strong style="font-family:monospace; font-size:13px;">{{ f.name }}</strong>
+          <span style="color:var(--muted); font-size:12px; margin-left:8px;">{{ f.size_kb }} KB</span>
+        </span>
+        <a href="/api/jobs/{{ job.job_id }}/files/{{ f.name }}"
+           download="{{ f.name }}"
+           class="btn btn-secondary"
+           style="padding:3px 10px; font-size:12px;"
+           onclick="event.stopPropagation()">
+          ↓ Descargar
+        </a>
+      </summary>
+
+      {% if f.is_text and f.preview %}
+      <div style="padding:0 14px 14px;">
+        <pre>{{ f.preview }}</pre>
+      </div>
+      {% else %}
+      <div style="padding:10px 14px; color:var(--muted); font-size:13px;">
+        Vista previa no disponible para este tipo de archivo.
+      </div>
+      {% endif %}
+    </details>
+    {% endfor %}
+  </div>
+
+  {% elif job.status in ('queued', 'running') %}
+  <p class="empty" id="waitingMsg">El pipeline está en ejecución, los archivos aparecerán aquí al finalizar.</p>
+  {% else %}
+  <p class="empty">No se generaron archivos.</p>
+  {% endif %}
+</div>
+
+<!-- Polling for active jobs -->
+{% if job.status in ('queued', 'running') %}
+<script>
+  const JOB_ID = "{{ job.job_id }}";
+  let pollTimer = null;
+
+  async function poll() {
+    try {
+      const res  = await fetch(`/api/jobs/${JOB_ID}`);
+      const data = await res.json();
+
+      // Update status badge
+      const badge = document.getElementById('statusBadge');
+      const statusText = document.getElementById('statusText');
+      badge.className = `badge badge-${data.status}`;
+      statusText.textContent = data.status;
+
+      if (data.started_at) {
+        document.getElementById('startedAt').textContent =
+          data.started_at.slice(0, 19).replace('T', ' ');
+      }
+      if (data.completed_at) {
+        document.getElementById('completedAt').textContent =
+          data.completed_at.slice(0, 19).replace('T', ' ');
+      }
+
+      if (data.status === 'completed' || data.status === 'failed') {
+        clearInterval(pollTimer);
+        // Full reload to get rendered file list / error box
+        window.location.reload();
+      }
+    } catch (_) { /* network blip — keep polling */ }
+  }
+
+  pollTimer = setInterval(poll, 4000);
+</script>
+{% endif %}
+{% endblock %}
