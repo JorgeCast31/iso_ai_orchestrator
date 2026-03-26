@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}ISO Orchestrator{% endblock %}</title>
+  <style>
+    :root {
+      --bg:       #f4f5f7;
+      --surface:  #ffffff;
+      --border:   #dde1e7;
+      --text:     #1a1d23;
+      --muted:    #6b7280;
+      --accent:   #2563eb;
+      --accent-h: #1d4ed8;
+      --green:    #16a34a;
+      --red:      #dc2626;
+      --blue:     #2563eb;
+      --gray:     #6b7280;
+      --radius:   6px;
+      --font:     -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: var(--font);
+      font-size: 14px;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* ---- Navigation ---- */
+    nav {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      height: 52px;
+    }
+    nav .brand { font-weight: 700; font-size: 15px; color: var(--text); }
+    nav a.nav-link {
+      font-size: 13px;
+      color: var(--muted);
+      padding: 4px 0;
+      border-bottom: 2px solid transparent;
+    }
+    nav a.nav-link:hover,
+    nav a.nav-link.active {
+      color: var(--text);
+      border-bottom-color: var(--accent);
+      text-decoration: none;
+    }
+
+    /* ---- Page layout ---- */
+    .page { max-width: 900px; margin: 0 auto; padding: 32px 24px; }
+    h1 { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+    .subtitle { color: var(--muted); margin-bottom: 28px; font-size: 13px; }
+
+    /* ---- Card ---- */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      margin-bottom: 16px;
+    }
+    .card-title { font-weight: 600; font-size: 15px; margin-bottom: 16px; }
+
+    /* ---- Form ---- */
+    .field { margin-bottom: 18px; }
+    label { display: block; font-weight: 500; font-size: 13px; margin-bottom: 6px; }
+    .hint { font-size: 12px; color: var(--muted); margin-top: 4px; }
+    input[type="file"],
+    textarea {
+      width: 100%;
+      padding: 8px 10px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-family: var(--font);
+      font-size: 13px;
+      background: var(--surface);
+      color: var(--text);
+      outline: none;
+      transition: border-color .15s;
+    }
+    input[type="file"]:focus,
+    textarea:focus { border-color: var(--accent); }
+    textarea { resize: vertical; min-height: 80px; }
+
+    /* ---- Buttons ---- */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 18px;
+      border-radius: var(--radius);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: background .15s;
+    }
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-primary:hover { background: var(--accent-h); }
+    .btn-secondary {
+      background: var(--surface);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    .btn-secondary:hover { background: var(--bg); }
+    .btn:disabled { opacity: .5; cursor: not-allowed; }
+
+    /* ---- Status badges ---- */
+    .badge {
+      display: inline-block;
+      padding: 2px 10px;
+      border-radius: 99px;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .4px;
+    }
+    .badge-queued   { background: #f3f4f6; color: var(--gray); }
+    .badge-running  { background: #dbeafe; color: var(--blue); }
+    .badge-completed{ background: #dcfce7; color: var(--green); }
+    .badge-failed   { background: #fee2e2; color: var(--red); }
+
+    /* ---- Table ---- */
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th { text-align: left; font-weight: 600; padding: 8px 12px;
+         border-bottom: 2px solid var(--border); color: var(--muted); }
+    td { padding: 10px 12px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: var(--bg); }
+
+    /* ---- Code / preview ---- */
+    pre {
+      background: #1e1e2e;
+      color: #cdd6f4;
+      padding: 16px;
+      border-radius: var(--radius);
+      font-size: 12px;
+      line-height: 1.6;
+      overflow: auto;
+      max-height: 400px;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    /* ---- Misc ---- */
+    .meta-row { display: flex; gap: 32px; flex-wrap: wrap; margin-bottom: 20px; }
+    .meta-item { }
+    .meta-label { font-size: 11px; font-weight: 600; text-transform: uppercase;
+                  letter-spacing: .5px; color: var(--muted); margin-bottom: 2px; }
+    .meta-value { font-size: 13px; font-weight: 500; }
+    .error-box {
+      background: #fee2e2;
+      border: 1px solid #fca5a5;
+      border-radius: var(--radius);
+      padding: 12px 16px;
+      font-size: 13px;
+      color: #7f1d1d;
+      margin-bottom: 16px;
+    }
+    .spinner {
+      display: inline-block;
+      width: 12px; height: 12px;
+      border: 2px solid var(--blue);
+      border-top-color: transparent;
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+      vertical-align: middle;
+      margin-right: 6px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .empty { color: var(--muted); font-style: italic; padding: 24px 0; text-align: center; }
+    .actions { display: flex; gap: 8px; }
+  </style>
+</head>
+<body>
+  <nav>
+    <span class="brand">ISO Orchestrator</span>
+    <a href="/" class="nav-link {% if request.url.path == '/' %}active{% endif %}">Nuevo Job</a>
+    <a href="/jobs" class="nav-link {% if request.url.path.startswith('/jobs') %}active{% endif %}">Jobs</a>
+    <a href="/api/docs" class="nav-link" target="_blank">API</a>
+  </nav>
+
+  <div class="page">
+    {% block content %}{% endblock %}
+  </div>
+</body>
+</html>

@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block title %}Nuevo Job — ISO Orchestrator{% endblock %}
+
+{% block content %}
+<h1>Generar Documento POE</h1>
+<p class="subtitle">Sube la plantilla y el plan maestro para iniciar un nuevo ciclo de generación.</p>
+
+<div class="card">
+  <div class="card-title">Archivos de entrada</div>
+
+  <form id="uploadForm" action="/jobs" method="post" enctype="multipart/form-data">
+
+    <div class="field">
+      <label for="template_file">Plantilla POE <span style="color:#dc2626">*</span></label>
+      <input type="file" id="template_file" name="template_file"
+             accept=".pdf" required>
+      <p class="hint">Solo se acepta PDF. Define la estructura del documento a generar.</p>
+    </div>
+
+    <div class="field">
+      <label for="plan_file">Plan Maestro <span style="color:#dc2626">*</span></label>
+      <input type="file" id="plan_file" name="plan_file"
+             accept=".xlsx" required>
+      <p class="hint">Solo se acepta XLSX. Archivo de actividades de mantenimiento tabuladas.</p>
+    </div>
+
+    <div class="field">
+      <label for="context">Contexto adicional <span style="color:var(--muted)">(opcional)</span></label>
+      <textarea id="context" name="context"
+                placeholder="Equipo, modelo, normativa aplicable, observaciones especiales…"></textarea>
+      <p class="hint">Se prepende al plan maestro para guiar la generación inicial.</p>
+    </div>
+
+    <button type="submit" class="btn btn-primary" id="submitBtn">
+      Iniciar Generación
+    </button>
+  </form>
+</div>
+
+<script>
+  const form = document.getElementById('uploadForm');
+  const btn  = document.getElementById('submitBtn');
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    btn.disabled = true;
+    btn.textContent = 'Enviando…';
+
+    const fd = new FormData(form);
+    try {
+      const res  = await fetch('/jobs', { method: 'POST', body: fd });
+      const data = await res.json();
+      if (res.ok) {
+        window.location.href = `/jobs/${data.job_id}`;
+      } else {
+        alert('Error: ' + (data.detail || JSON.stringify(data)));
+        btn.disabled = false;
+        btn.textContent = 'Iniciar Generación';
+      }
+    } catch (err) {
+      alert('Error de red: ' + err.message);
+      btn.disabled = false;
+      btn.textContent = 'Iniciar Generación';
+    }
+  });
+</script>
+{% endblock %}
